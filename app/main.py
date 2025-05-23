@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.routers import auth
+from app.routers import auth, brandwatch
 
 app = FastAPI(
     title="MCP Brandwatch API",
@@ -19,6 +19,7 @@ app.add_middleware(
 
 # Include routers
 app.include_router(auth.router, tags=["autentikasi"])
+app.include_router(brandwatch.router, prefix="/brandwatch", tags=["brandwatch"])
 
 @app.get("/")
 async def root():
