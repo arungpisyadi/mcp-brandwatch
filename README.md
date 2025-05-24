@@ -1,59 +1,56 @@
 # MCP Brandwatch API
 
-A FastAPI-based implementation of the Brandwatch API using the Model-Content-Protocol (MCP) pattern.
-
 ## Overview
-
-This project implements a RESTful API for interacting with the Brandwatch Consumer Research platform. It follows the MCP (Model-Content-Protocol) pattern for clean architecture and separation of concerns.
-
-## Requirements
-
-- Python 3.8+
-- MySQL 8.0+
-- Virtual Environment (recommended)
-- Docker and Docker Compose (for containerized deployment)
+MCP Brandwatch API is a FastAPI application that integrates with the Brandwatch API for social media data management.
 
 ## Features
-
-- Authentication using OAuth2
-- Rate limiting (30 calls per 10 minutes)
-- Comprehensive error handling
-- Async operations
-- Data validation using Pydantic
-- Logging
 - JWT Authentication
 - MySQL Database Integration
 - Brandwatch API Integration
 - RESTful API Endpoints
 - API Documentation with Swagger/ReDoc
 - Docker Support
+- Rate Limiting
+- Comprehensive Error Handling
+- Async Operations
+- Data Validation using Pydantic
+- Logging
+
+## Requirements
+- Python 3.8+
+- MySQL 8.0+
+- Docker (optional)
 
 ## Project Structure
-
 ```
 mcp-brandwatch/
 ├── app/
 │   ├── core/
-│   │   ├── mcp_models.py
 │   │   ├── brandwatch_protocol.py
-│   │   └── security.py
+│   │   ├── mcp_models.py
+│   │   └── config.py
 │   ├── consumers/
 │   │   └── brandwatch_consumer.py
+│   ├── models/
+│   │   └── database.py
 │   ├── routers/
 │   │   └── brandwatch.py
 │   ├── database.py
 │   └── main.py
-├── .env
-├── requirements.txt
-├── Dockerfile
+├── scripts/
+│   ├── create_db.py
+│   └── create_db.sh
+├── .env.example
+├── .gitignore
 ├── docker-compose.yml
-└── README.md
+├── Dockerfile
+├── LICENSE
+└── requirements.txt
 ```
 
 ## API Endpoints
 
 ### Authentication
-
 All endpoints require OAuth2 authentication. Include the access token in the Authorization header:
 ```
 Authorization: Bearer <access_token>
@@ -257,11 +254,80 @@ GET /brandwatch/projects
 ```
 Get all projects.
 
+## Database Configuration
+
+### Local Development
+1. Create `.env` file from `.env.example`:
+   ```bash
+   cp .env.example .env
+   ```
+
+2. Update database configuration in `.env`:
+   ```env
+   # For local database
+   DATABASE_URL=mysql://root:password@localhost:3306/mcp_brandwatch
+   
+   # For remote database (RDS)
+   DATABASE_URL=mysql://username:password@your-rds-endpoint:3306/mcp_brandwatch
+   ```
+
+3. Create database using script:
+   ```bash
+   # Give execute permission
+   chmod +x scripts/create_db.sh
+   
+   # Run script
+   ./scripts/create_db.sh
+   ```
+
+4. Run database migrations:
+   ```bash
+   alembic upgrade head
+   ```
+
+### Docker Deployment
+1. Update database configuration in `.env`:
+   ```env
+   DATABASE_URL=mysql://username:password@your-rds-endpoint:3306/mcp_brandwatch
+   ```
+
+2. Run application:
+   ```bash
+   docker-compose up --build
+   ```
+
+### Database Scripts
+Scripts `create_db.py` and `create_db.sh` provide functionality to:
+- Read database configuration from `.env`
+- Create database if it doesn't exist
+- Set character set to `utf8mb4` and collation to `utf8mb4_unicode_ci`
+- Verify database connection
+
+### Best Practices
+1. **Security**:
+   - Never commit `.env` file
+   - Use strong passwords
+   - Restrict database access with firewall
+   - Enable SSL for database connections
+
+2. **RDS Configuration**:
+   - Use appropriate parameter group
+   - Enable automatic backups
+   - Monitor database performance
+   - Use multi-AZ for high availability
+   - Adjust instance type based on needs
+
+3. **Maintenance**:
+   - Regular database backups
+   - Monitor disk space usage
+   - Optimize query performance
+   - Regular database updates
+
 ## Environment Variables
-
-Create a `.env` file with the following variables:
-
 ```env
+# Application Configuration
+PORT=8000
+
 # Database Configuration
 DATABASE_URL=mysql://root:password@localhost:3306/mcp_brandwatch
 
@@ -278,78 +344,63 @@ BRANDWATCH_CLIENT_ID=brandwatch-api-client
 ## Installation
 
 ### Local Development
+1. Clone repository:
+   ```bash
+   git clone https://github.com/your-username/mcp-brandwatch.git
+   cd mcp-brandwatch
+   ```
 
-1. Clone the repository:
-```bash
-git clone https://github.com/yourusername/mcp-brandwatch.git
-cd mcp-brandwatch
-```
-
-2. Create and activate a virtual environment:
-```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-```
+2. Create virtual environment:
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # Linux/Mac
+   venv\Scripts\activate     # Windows
+   ```
 
 3. Install dependencies:
-```bash
-pip install -r requirements.txt
-```
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-4. Set up environment variables:
-```bash
-cp .env.example .env
-# Edit .env with your credentials
-```
+4. Setup database:
+   ```bash
+   ./scripts/create_db.sh
+   alembic upgrade head
+   ```
 
-5. Create MySQL database:
-```sql
-CREATE DATABASE mcp_brandwatch CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-```
-
-6. Run database migrations:
-```bash
-alembic upgrade head
-```
-
-7. Run the application:
-```bash
-uvicorn app.main:app --reload
-```
+5. Run application:
+   ```bash
+   uvicorn app.main:app --reload
+   ```
 
 ### Docker Deployment
-
-1. Build and start the containers:
-```bash
-docker-compose up --build
-```
+1. Build and run containers:
+   ```bash
+   docker-compose up --build
+   ```
 
 2. The application will be available at http://localhost:8000
 
 3. To stop the containers:
-```bash
-docker-compose down
-```
+   ```bash
+   docker-compose down
+   ```
 
 4. To stop the containers and remove volumes:
-```bash
-docker-compose down -v
-```
+   ```bash
+   docker-compose down -v
+   ```
 
 ## API Documentation
-
-After running the application, you can access the API documentation at:
-- Swagger UI: http://localhost:8000/docs
-- ReDoc: http://localhost:8000/redoc
+- Swagger UI: `http://localhost:8000/docs`
+- ReDoc: `http://localhost:8000/redoc`
 
 ## Rate Limiting
-
 The API implements rate limiting according to Brandwatch's specifications:
 - 30 calls per 10 minutes per client
 - Rate limits are applied at the client level, not the user level
 
 ## Error Handling
-
 The API returns appropriate HTTP status codes and error messages:
 - 400: Bad Request
 - 401: Unauthorized
@@ -358,14 +409,19 @@ The API returns appropriate HTTP status codes and error messages:
 - 429: Too Many Requests
 - 500: Internal Server Error
 
-## Contributing
+Response format:
+```json
+{
+    "detail": "Error message"
+}
+```
 
+## Contributing
 1. Fork the repository
-2. Create a feature branch
-3. Commit your changes
-4. Push to the branch
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Create a Pull Request
 
 ## License
-
 This project is licensed under the MIT License - see the LICENSE file for details.

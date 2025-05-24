@@ -26,8 +26,11 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy project files
 COPY --chown=appuser:appuser . .
 
+# Make entrypoint script executable
+RUN chmod +x /app/entrypoint.sh
+
 # Expose port (will be overridden by docker-compose)
 EXPOSE ${PORT:-8000}
 
-# Command to run the application
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "${PORT:-8000}"] 
+# Use entrypoint script
+ENTRYPOINT ["/app/entrypoint.sh"] 

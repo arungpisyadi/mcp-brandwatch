@@ -15,25 +15,8 @@ services:
       - ACCESS_TOKEN_EXPIRE_MINUTES=${ACCESS_TOKEN_EXPIRE_MINUTES}
       - BRANDWATCH_API_URL=${BRANDWATCH_API_URL}
       - BRANDWATCH_CLIENT_ID=${BRANDWATCH_CLIENT_ID}
-    depends_on:
-      - db
     networks:
       - mcp-network
-
-  db:
-    image: mysql:8.0
-    environment:
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-      - MYSQL_DATABASE=${MYSQL_DATABASE}
-    ports:
-      - "${MYSQL_PORT:-3306}:3306"
-    volumes:
-      - mysql_data:/var/lib/mysql
-    networks:
-      - mcp-network
-
-volumes:
-  mysql_data:
 
 networks:
   mcp-network:
