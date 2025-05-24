@@ -51,10 +51,36 @@ mcp-brandwatch/
 ## API Endpoints
 
 ### Authentication
-All endpoints require OAuth2 authentication. Include the access token in the Authorization header:
+
+#### Get Access Token
+```http
+POST /brandwatch/auth/token
 ```
-Authorization: Bearer <access_token>
+Get access token for API authentication.
+
+Request Body:
+```json
+{
+    "username": "your@username.com",
+    "password": "yourpassword",
+    "grant_type": "api-password",
+    "client_id": "brandwatch-api-client"
+}
 ```
+
+Response:
+```json
+{
+    "access_token": "aa000000-0aaa-0000-0a00-aa00a000a00a",
+    "token_type": "bearer",
+    "expires_in": 31535999,
+    "scope": "read trust write"
+}
+```
+
+Note: The access token is valid for one year by default. Include it in subsequent requests using either:
+1. Authorization header: `Authorization: Bearer <access_token>`
+2. URL parameter: `?access_token=<access_token>`
 
 ### User Endpoints
 
