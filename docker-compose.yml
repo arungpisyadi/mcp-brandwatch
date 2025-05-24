@@ -8,31 +8,15 @@ services:
     volumes:
       - .:/app
     environment:
-      - DATABASE_URL=mysql://root:password@db:3306/mcp_brandwatch
-      - SECRET_KEY=09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7
-      - ALGORITHM=HS256
-      - ACCESS_TOKEN_EXPIRE_MINUTES=30
-      - BRANDWATCH_API_URL=https://api.brandwatch.com
-      - BRANDWATCH_CLIENT_ID=brandwatch-api-client
-    depends_on:
-      - db
+      - PORT=${PORT:-8000}
+      - DATABASE_URL=${DATABASE_URL}
+      - SECRET_KEY=${SECRET_KEY}
+      - ALGORITHM=${ALGORITHM}
+      - ACCESS_TOKEN_EXPIRE_MINUTES=${ACCESS_TOKEN_EXPIRE_MINUTES}
+      - BRANDWATCH_API_URL=${BRANDWATCH_API_URL}
+      - BRANDWATCH_CLIENT_ID=${BRANDWATCH_CLIENT_ID}
     networks:
       - mcp-network
-
-  db:
-    image: mysql:8.0
-    ports:
-      - "3306:3306"
-    environment:
-      - MYSQL_ROOT_PASSWORD=password
-      - MYSQL_DATABASE=mcp_brandwatch
-    volumes:
-      - mysql_data:/var/lib/mysql
-    networks:
-      - mcp-network
-
-volumes:
-  mysql_data:
 
 networks:
   mcp-network:

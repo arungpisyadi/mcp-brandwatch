@@ -52,23 +52,22 @@ alembic upgrade head
 ```
 
 ### Docker Deployment
-
-1. Build and start the containers:
-```bash
-docker-compose up --build
-```
+1. Build and run containers:
+   ```bash
+   docker-compose up --build
+   ```
 
 2. The application will be available at http://localhost:8000
 
 3. To stop the containers:
-```bash
-docker-compose down
-```
+   ```bash
+   docker-compose down
+   ```
 
 4. To stop the containers and remove volumes:
-```bash
-docker-compose down -v
-```
+   ```bash
+   docker-compose down -v
+   ```
 
 ## Running the Application
 
@@ -85,10 +84,8 @@ docker-compose up
 The application will run at http://localhost:8000
 
 ## API Documentation
-
-After running the application, you can access the API documentation at:
-- Swagger UI: http://localhost:8000/docs
-- ReDoc: http://localhost:8000/redoc
+- Swagger UI: `http://localhost:8000/docs`
+- ReDoc: `http://localhost:8000/redoc`
 
 ## Features
 
@@ -119,8 +116,14 @@ mcp-brandwatch/
 └── README.md
 ```
 
-## Contributing
+Response format:
+```json
+{
+    "detail": "Error message"
+}
+```
 
+## Contributing
 1. Fork the repository
 2. Create your feature branch (`git checkout -b feature/amazing-feature`)
 3. Commit your changes (`git commit -m 'Add some amazing feature'`)
