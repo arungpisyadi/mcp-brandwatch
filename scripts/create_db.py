@@ -14,41 +14,21 @@ def load_env():
         sys.exit(1)
     load_dotenv(env_path)
 
-def parse_database_url():
-    """Parse DATABASE_URL from environment variables"""
-    db_url = os.getenv('DATABASE_URL')
-    if not db_url:
-        print("Error: DATABASE_URL not found in .env file!")
-        sys.exit(1)
+def get_database_config():
+    """Get database configuration from environment variables"""
+    required_vars = ['DB_USERNAME', 'DB_PASSWORD']
+    for var in required_vars:
+        if not os.getenv(var):
+            print(f"Error: {var} not found in .env file!")
+            sys.exit(1)
 
-    # Format: mysql://username:password@host:port/database
-    try:
-        # Remove mysql:// prefix
-        db_url = db_url.replace('mysql://', '')
-        
-        # Split into parts
-        auth, rest = db_url.split('@')
-        username, password = auth.split(':')
-        host_port, database = rest.split('/')
-        
-        # Handle port if specified
-        if ':' in host_port:
-            host, port = host_port.split(':')
-            port = int(port)
-        else:
-            host = host_port
-            port = 3306
-
-        return {
-            'host': host,
-            'port': port,
-            'user': username,
-            'password': password,
-            'database': database
-        }
-    except Exception as e:
-        print(f"Error parsing DATABASE_URL: {e}")
-        sys.exit(1)
+    return {
+        'host': os.getenv('DB_HOST', 'localhost'),
+        'port': int(os.getenv('DB_PORT', '3306')),
+        'user': os.getenv('DB_USERNAME'),
+        'password': os.getenv('DB_PASSWORD'),
+        'database': os.getenv('DB_NAME', 'mcp_brandwatch')
+    }
 
 def create_database():
     """Create database if it doesn't exist"""
@@ -56,8 +36,8 @@ def create_database():
         # Load environment variables
         load_env()
         
-        # Parse database configuration
-        db_config = parse_database_url()
+        # Get database configuration
+        db_config = get_database_config()
         
         # Connect to MySQL server without database
         connection = mysql.connector.connect(

@@ -9,6 +9,8 @@ services:
       - .:/app
     environment:
       - PORT=${PORT:-8000}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
       - DATABASE_URL=${DATABASE_URL}
       - SECRET_KEY=${SECRET_KEY}
       - ALGORITHM=${ALGORITHM}

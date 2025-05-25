@@ -29,7 +29,11 @@ pip install -r requirements.txt
 4. Create .env file and fill in the required configuration:
 ```
 # Database Configuration
-DATABASE_URL=mysql://root:password@localhost:3306/mcp_brandwatch
+DB_USERNAME=root
+DB_PASSWORD=password
+DB_HOST=localhost
+DB_PORT=3306
+DB_NAME=mcp_brandwatch
 
 # JWT Configuration
 SECRET_KEY=your-secret-key-here
