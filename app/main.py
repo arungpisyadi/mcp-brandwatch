@@ -4,11 +4,11 @@ from app.routers import auth, brandwatch
 
 app = FastAPI(
     title="MCP Brandwatch API",
-    description="API untuk integrasi MCP dengan Brandwatch",
+    description="API for MCP integration with Brandwatch",
     version="1.0.0"
 )
 
-# Konfigurasi CORS
+# CORS Configuration
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
